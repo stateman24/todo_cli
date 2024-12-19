@@ -15,6 +15,7 @@ if(!fs.existsSync(todo_db)){ // check if file exists
 }
 const tasks = JSON.parse(fs.readFileSync(todo_db, "utf-8")); // load all the task in the database
 
+// get the current time
 const currentTime = new Date().toLocaleTimeString("en-Us", {
     hour: '2-digit',
     minute: '2-digit',
@@ -121,6 +122,14 @@ export const markAsInProgress = (task_id) => {
 export const deleteTask = (task_id) => {
     let newTasks = tasks.filter(task => task.id !== task_id);
     fs.writeFileSync(todo_db, JSON.stringify(newTasks));
+}
+
+// update a task
+export const updateTask = (task_id, description) => {
+    tasks[task_id-1].description = description;
+    tasks[task_id-1].updatedAt = currentTime;
+    fs.writeFileSync(todo_db, JSON.stringify(tasks));
+    return task_id
 }
 
 
