@@ -4,16 +4,21 @@
   "description": "A Todo application on the command line",
   "main": "task.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/stateman24/todo_cli.git"
   },
+  "type": "module",
   "author": "stateman24",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/stateman24/todo_cli/issues"
   },
-  "homepage": "https://github.com/stateman24/todo_cli#readme"
+  "homepage": "https://github.com/stateman24/todo_cli#readme",
+  "dependencies": {
+    "commander": "^12.1.0",
+    "inquirer": "^12.2.0"
+  }
 }
