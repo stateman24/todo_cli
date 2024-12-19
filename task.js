@@ -107,7 +107,6 @@ export const listInProgressTasks = () => {
 export const markAsDone = (task_id) => {
     tasks[task_id-1].status = "done";
     tasks[task_id-1].updatedAt = currentTime;
-    console.log(tasks[task_id-1])
     fs.writeFileSync(todo_db, JSON.stringify(tasks));
 }
 
