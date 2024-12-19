@@ -1,4 +1,12 @@
 import fs from "fs";
+import chalk from "chalk";
+import Table from "cli-table";
+
+
+const todo_table = new Table({
+    head: ["id", "description", "status", "createdAt", "updatedAt"],
+    colWidths: [10, 60, 20, 20, 20],
+})
 
 const todo_db = "./tododb.json";
 // intiatate the todo database which is a json file
@@ -20,62 +28,99 @@ const nextTaskId = () => {
         return nextTaskId;
     }else{
         return 1;
-    }
-    
-    
+    } 
 }
 
 // function add task based on the description
-const add = (description) => {
+export const add = (description) => {
     let task_id = nextTaskId();
-    let status = 'todo';
+    let status = 'to-do';
     let createAt = currentTime;
     let updatedAt = createAt;
     tasks.push({"id": task_id, "description": description, "status": status, "createdAt": createAt, "updatedAt": updatedAt});
     fs.writeFileSync(todo_db, JSON.stringify(tasks));
+    return task_id;
 }
 
 // list all task avalible
-const list = () => {
-    console.log(tasks);
+export const list = () => {
+    if (tasks.length && tasks){
+        console.log(chalk.green.bold('List of tasks'));
+        tasks.forEach(task => {
+            if(task.status === "to-do"){
+                todo_table.push([task.id, task.description, chalk.red.bold(task.status), task.createdAt, task.updatedAt]);
+            }else if (task.status === "in-progress"){
+                todo_table.push([task.id, task.description, chalk.yellow(task.status), task.createdAt, task.updatedAt]);
+            }else{
+                todo_table.push([task.id, task.description, chalk.green.bold(task.status), task.createdAt, task.updatedAt]);
+            }
+        });
+        console.log(todo_table.toString());
+    }else{
+        console.log(chalk.red.bold('No tasks available'));
+    }
 }
 // list all undone tasks 
-const listTodoTasks = () => {
-    let todoTasks = tasks.filter(task => task.status == "todo");
-    console.log(todoTasks);
+export const listTodoTasks = () => {
+    let todoTasks = tasks.filter(task => task.status == "to-do");
+    if(todoTasks && todoTasks.length){
+        console.log(chalk.green.bold('List of in progress tasks'));
+        todoTasks.forEach(task => {
+            todo_table.push([task.id, task.description, chalk.red.bold(task.status), task.createdAt, task.updatedAt]);
+        });
+        console.log(todo_table.toString());
+    }else{
+        console.log(chalk.green.bold('No undone tasks available'));
+    }
 }
 
 // list all done tasks
-const listDoneTasks = () => {
+export const listDoneTasks = () => {
     let doneTasks = tasks.filter(task => task.status == "done");
-    console.log(doneTasks);
+    if(doneTasks && doneTasks.length){
+        console.log(chalk.red.bold('List of undone tasks'));
+        doneTasks.forEach(task => {
+            todo_table.push([task.id, task.description, chalk.green.bold(task.status), task.createdAt, task.updatedAt]);
+        });
+        console.log(todo_table.toString());
+    }else{
+        console.log(chalk.red.bold('No done tasks available'));
+    }
 }
 
-// list all inprogress tasks
-const listInProgressTasks = () => {
+// list all inprogress task
+export const listInProgressTasks = () => {
     let inProgressTasks = tasks.filter(task => task.status == "in-progress");
-    console.log(inProgressTasks);
+    if(inProgressTasks && inProgressTasks.length){
+        console.log(chalk.yellow.bold('List of inprogress tasks'));
+        inProgressTasks.forEach(task => {
+            todo_table.push([task.id, task.description, chalk.yellow(task.status), task.createdAt, task.updatedAt]);
+        });
+        console.log(todo_table.toString());
+    }else{
+        console.log(chalk.yellowBright.bold('No in progress tasks available'));
+    }
 }
 
 // update a task as done
-const markAsDone = (task_id) => {
-    tasks[task_id-1] = "done";
-    task[task_id-1] = currentTime;
+export const markAsDone = (task_id) => {
+    tasks[task_id-1].status = "done";
+    tasks[task_id-1].updatedAt = currentTime;
+    console.log(tasks[task_id-1])
     fs.writeFileSync(todo_db, JSON.stringify(tasks));
 }
 
 // update a task as in-progress
-const markAsInProgress = (task_id) => {
+export const markAsInProgress = (task_id) => {
     tasks[task_id-1].status = "in-progress";
     tasks[task_id-1].updatedAt = currentTime;
     fs.writeFileSync(todo_db, JSON.stringify(tasks));
 }
 
 // delete a task
-const deleteTask = (task_id) => {
+export const deleteTask = (task_id) => {
     let newTasks = tasks.filter(task => task.id !== task_id);
     fs.writeFileSync(todo_db, JSON.stringify(newTasks));
 }
 
 
-add("this is taking time");

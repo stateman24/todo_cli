@@ -13,11 +13,16 @@
   "type": "module",
   "author": "stateman24",
   "license": "MIT",
+  "bin": {
+    "todo-cli": "./task_cli.js"
+  },
   "bugs": {
     "url": "https://github.com/stateman24/todo_cli/issues"
   },
   "homepage": "https://github.com/stateman24/todo_cli#readme",
   "dependencies": {
+    "chalk": "^5.4.0",
+    "cli-table": "^0.3.11",
     "commander": "^12.1.0",
     "inquirer": "^12.2.0"
   }
