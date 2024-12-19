@@ -89,6 +89,6 @@ switch(args[0]){
             }else if(command === "mark"){
                 console.log(chalk.yellow(command) + ": to change task status --- [mark-done <task_id>], [mark-in-progres <task_id>]")
             }
-        })        
+        })   
     }
 
