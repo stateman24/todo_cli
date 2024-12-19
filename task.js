@@ -1,15 +1,11 @@
-#! /usr/bin/env node
-
-import { create } from "domain";
 import fs from "fs";
-import inquirer from "inquirer";
 
-const todo_db = "./tododb.json"
+const todo_db = "./tododb.json";
 // intiatate the todo database which is a json file
 if(!fs.existsSync(todo_db)){ // check if file exists 
-    fs.writeFileSync(todo_db, JSON.stringify({"tasks":[]}))
+    fs.writeFileSync(todo_db, JSON.stringify([]));
 }
-const db = JSON.parse(fs.readFileSync(todo_db, "utf-8")) // load all the task in the database
+const tasks = JSON.parse(fs.readFileSync(todo_db, "utf-8")); // load all the task in the database
 
 const currentTime = new Date().toLocaleTimeString("en-Us", {
     hour: '2-digit',
@@ -18,21 +14,60 @@ const currentTime = new Date().toLocaleTimeString("en-Us", {
     hour12: true, // Change to true for 12-hour time
 });
 
+const nextTaskId = () => {
+    const nextTaskId = Math.max(...tasks.map(task => task.id)) + 1; // get the max id and add 1 to it 
+    return nextTaskId;
+    
+}
 
-const add = (task_id, description) => {
+// function add task based on the description
+const add = (description) => {
+    let task_id = nextTaskId();
     let status = 'todo';
     let createAt = currentTime;
     let updatedAt = createAt;
-    db.tasks.push({"id": task_id, "description": description, "status": status, "createdAt": createAt, "updatedAt": updatedAt})
-    fs.writeFileSync(todo_db, JSON.stringify(db))
+    tasks.push({"id": task_id, "description": description, "status": status, "createdAt": createAt, "updatedAt": updatedAt});
+    fs.writeFileSync(todo_db, JSON.stringify(tasks));
 }
 
-add(1, "get todo cli done by today");
-add(2, "brush my teeth this monring");
+// list all task avalible
+const list = () => {
+    console.log(tasks);
+}
+// list all undone tasks 
+const listTodoTasks = () => {
+    let todoTasks = tasks.filter(task => task.status == "todo");
+    console.log(todoTasks);
+}
 
+// list all done tasks
+const listDoneTasks = () => {
+    let doneTasks = tasks.filter(task => task.status == "done");
+    console.log(doneTasks);
+}
+
+// list all inprogress tasks
+const listInProgressTasks = () => {
+    let inProgressTasks = tasks.filter(task => task.status == "in-progress");
+    console.log(inProgressTasks);
+}
+
+// update a task as done
 const markAsDone = (task_id) => {
-    db.tasks[task_id].status = "done"
-    db.tasks[task_id].updatedAt = currentTime
-    fs.writeFileSync(todo_db, JSON.stringify(db))
+    tasks[task_id-1] = "done";
+    task[task_id-1] = currentTime;
+    fs.writeFileSync(todo_db, JSON.stringify(tasks));
 }
 
+// update a task as in-progress
+const markAsInProgress = (task_id) => {
+    tasks[task_id-1].status = "in-progress";
+    tasks[task_id-1].updatedAt = currentTime;
+    fs.writeFileSync(todo_db, JSON.stringify(tasks));
+}
+
+// delete a task
+const deleteTask = (task_id) => {
+    let newTasks = tasks.filter(task => task.id !== task_id);
+    fs.writeFileSync(todo_db, JSON.stringify(newTasks));
+}
