@@ -15,8 +15,13 @@ const currentTime = new Date().toLocaleTimeString("en-Us", {
 });
 
 const nextTaskId = () => {
-    const nextTaskId = Math.max(...tasks.map(task => task.id)) + 1; // get the max id and add 1 to it 
-    return nextTaskId;
+    if (tasks.length > 0){
+        const nextTaskId = Math.max(...tasks.map(task => task.id)) + 1; // get the max id and add 1 to it 
+        return nextTaskId;
+    }else{
+        return 1;
+    }
+    
     
 }
 
@@ -71,3 +76,6 @@ const deleteTask = (task_id) => {
     let newTasks = tasks.filter(task => task.id !== task_id);
     fs.writeFileSync(todo_db, JSON.stringify(newTasks));
 }
+
+
+add("this is taking time");
